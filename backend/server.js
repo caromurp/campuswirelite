@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const express = require('express')
 const cookieSession = require('cookie-session')
+const path = require('path')
 
 const APIRouter = require('./routes/api')
 const AccountRouter = require('./routes/account')
@@ -17,6 +18,7 @@ mongoose.connect(MONGO_URI, {
 })
 
 app.use(express.json())
+app.use(express.static('dist'))
 
 app.use(
   cookieSession({
@@ -29,6 +31,11 @@ app.use(
 app.use('/api', APIRouter)
 app.use('/account', AccountRouter)
 app.use(isAuthenticated)
+
+app.get('/favicon.ico', (_, res) => res.status(404).send())
+app.get('*', (_, res) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html'))
+})
 
 app.use(function (err, req, res, next) {
   res.status(400).send(err.message)
