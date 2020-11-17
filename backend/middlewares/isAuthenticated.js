@@ -6,6 +6,7 @@ const isAuthenticated = (req, res, next) => {
       next()
     } else {
       res.send('No user logged in')
+      next()
     }
   } catch (e) {
     next(e)

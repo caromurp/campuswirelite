@@ -1,36 +1,34 @@
 const express = require('express')
 const Questions = require('../models/questions')
 const isAuthenticated = require('../middlewares/isAuthenticated')
+
 const router = express.Router()
 
 router.get('/', async (req, res) => {
   try {
     const all = await Questions.find({})
-    console.log('yo in the backend')
-    console.log(`all: ${all}`)
-
     res.send(all)
   } catch {
     res.send('failure occurs when getting all the questions')
   }
 })
 
-router.post('/add', isAuthenticated, (req, res) => {
+router.post('/add', isAuthenticated, async (req, res) => {
   const { author, questionText } = req.body
   try {
-    Questions.create({ author, questionText })
+    await Questions.create({ author, questionText, answer: '' })
     res.send(`added question: ${questionText} by author: ${author}`)
   } catch {
     res.send('failure occurs when creating the question')
   }
 })
 
-router.post('/answer', isAuthenticated, (req, res) => {
+router.post('/answer', isAuthenticated, async (req, res) => {
   const { _id, answer } = req.body
   try {
-    Questions.updateOne({ _id: _id }, { $set: { answer: answer } })
-    res.send('questione updated')
-  } catch {
+    await Questions.updateOne({ _id }, { $set: { answer } })
+    res.send('question updated')
+  } catch (e) {
     res.send('failure occurs when creating the question')
   }
 })

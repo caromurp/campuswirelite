@@ -15,6 +15,7 @@ const MONGO_URI = 'mongodb://localhost:27017/campuswirelite'
 mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  useFindAndModify: false,
 })
 
 app.use(express.json())

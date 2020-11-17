@@ -1,12 +1,21 @@
 import React, { useState } from 'react'
 import axios from 'axios'
+import Button from 'react-bootstrap/Button'
 
-const Question = ({ isLoggedIn, question}) => {
-  const [_id, setId] = useState(question._id)
+const Question = ({ isLoggedIn, question }) => {
   const [answer, setAnswer] = useState('')
 
-  const answerQuestion = async () => {
-    await axios.post('/api/answer', { _id, answer })
+  const handleChange = e => {
+    const { target } = e
+    const { value } = target
+    setAnswer(value)
+  }
+  const handleSubmit = async () => {
+    try {
+      await axios.post('/api/answer', { _id: question._id, answer })
+    } catch (e) {
+      alert(`Error adding question: ${e}`)
+    }
   }
 
   return (
@@ -16,8 +25,8 @@ const Question = ({ isLoggedIn, question}) => {
       <h2>Answer: {question.answer}</h2>
       {isLoggedIn && (
         <div>
-          <input placeholder="Answer this question" onChange={e => setAnswer(e.target.value)}></input>
-          <button onClick={() => answerQuestion(_id, answer)}></button>
+          <input placeholder="Answer this question" onChange={handleChange}></input>
+          <Button onClick={handleSubmit}>Submit Answer</Button>
         </div>
       )}
     </div>
